@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../controllers/parent_controller.dart';
 
 class LoginForm extends StatefulWidget {
@@ -13,18 +14,42 @@ class LoginFormState extends State<LoginForm> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  String? _errorMessage;
+
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   Future<void> checkExistAndLoginParent(String phone, String password) async {
+    setState(() {
+      _errorMessage = null;
+    });
+
     final userExists = await checkParentByPhone(phone);
     if (_formKey.currentState!.validate()) {
       Future.delayed(const Duration(seconds: 1), () async {
         if (userExists) {
           print('User exists.');
-          loginParent(phone, password).then((value) => {
-            Navigator.pushNamed(context, '/parent/kids', arguments: phone)
+          loginParent(phone, password).then((value) async {
+            // Store user login state
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.setBool('isLoggedIn', true);
+            prefs.setString('phone', phone);
+
+            Navigator.pushNamed(context, '/parent/kids');
+          }).catchError((error) {
+            setState(() {
+              _errorMessage = error.toString();
+            });
           });
-        }
-        else {
+        } else {
           print('User does not exist.');
+          setState(() {
+            _errorMessage = 'User does not exist.';
+          });
         }
       });
     }
@@ -61,6 +86,14 @@ class LoginFormState extends State<LoginForm> {
               return null;
             },
           ),
+          if (_errorMessage != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                _errorMessage!,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
           const SizedBox(height: 20.0),
           ElevatedButton(
             onPressed: () {

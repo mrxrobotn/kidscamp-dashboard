@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants.dart';
 
 Future<bool> checkParentByPhone(String phone) async {
@@ -67,6 +68,9 @@ Future<void> loginParent(String phone, String password) async {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
       tokenValue = responseData['token'];
       getLoggedParentId();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isLoggedIn', true);
+      prefs.setString('token', tokenValue);
       print('Login successful. Token: $tokenValue');
     } else if (response.statusCode == 404) {
       print('Parent not found');
@@ -93,7 +97,8 @@ Future<String> getLoggedParentId() async {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
       final user = responseData['user'];
       print('Logged user: $user');
-
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('id', user['id']);
       // Return the 'id' field from the user object
       return user['id'];
     } else {

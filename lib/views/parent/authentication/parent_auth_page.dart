@@ -1,22 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kidscamp/controllers/parent_controller.dart';
-import 'package:kidscamp/views/parent/authentication/login_form.dart';
+import 'login_form.dart';
 
 import 'register_form.dart';
 
-enum _Tab { one, two }
+enum AuthTab { login, register }
 
 class ParentAuthPage extends StatefulWidget {
-  const ParentAuthPage({super.key});
+  const ParentAuthPage({Key? key}) : super(key: key);
 
   @override
   State<ParentAuthPage> createState() => _ParentAuthPageState();
 }
 
 class _ParentAuthPageState extends State<ParentAuthPage> {
-
-  _Tab _selectedTab = _Tab.one;
+  AuthTab _selectedTab = AuthTab.login;
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +30,13 @@ class _ParentAuthPageState extends State<ParentAuthPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 16),
-                CupertinoSegmentedControl<_Tab>(
+                CupertinoSegmentedControl<AuthTab>(
                   selectedColor: Colors.black,
                   borderColor: Colors.black,
                   pressedColor: Colors.grey,
                   children: const {
-                    _Tab.one: Text('Login'),
-                    _Tab.two: Text('Register'),
+                    AuthTab.login: Text('Login'),
+                    AuthTab.register: Text('Register'),
                   },
                   onValueChanged: (value) {
                     setState(() {
@@ -51,19 +49,20 @@ class _ParentAuthPageState extends State<ParentAuthPage> {
                 Builder(
                   builder: (context) {
                     switch (_selectedTab) {
-                      case _Tab.one:
+                      case AuthTab.login:
                         return const LoginForm();
-                      case _Tab.two:
+                      case AuthTab.register:
                         return const RegisterForm();
+                      default:
+                        return Container(); // Default case
                     }
                   },
                 ),
               ],
-            )
+            ),
           ),
         ),
       ),
     );
   }
 }
-

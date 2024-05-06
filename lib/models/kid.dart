@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 class Kid {
   String firstName;
@@ -7,8 +6,8 @@ class Kid {
   String password;
   bool canAccess;
   DateTime? lastLogin;
-  List<String> ownedCourses;
-  List<String> coursesData;
+  List<String>? ownedCourses;
+  List<String>? coursesData;
 
   Kid({
     required this.firstName,
@@ -17,8 +16,8 @@ class Kid {
     required this.password,
     required this.canAccess,
     this.lastLogin,
-    required this.ownedCourses,
-    required this.coursesData,
+    this.ownedCourses,
+    this.coursesData,
   });
 
   factory Kid.fromJson(Map<String, dynamic> json) {
