@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
             const Icon(Icons.family_restroom),
             TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/parent/auth');
+                  Navigator.pushNamed(context, '/parent/login');
                 },
                 child: const Text('Parent Dashboard')
             ),

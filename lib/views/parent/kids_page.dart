@@ -4,7 +4,6 @@ import '../../components/custom_appbar.dart';
 import '../../controllers/kid_controller.dart';
 import '../../controllers/parent_controller.dart';
 import '../../models/kid.dart';
-import '../kid/kid_dashboard.dart';
 
 class KidsPage extends StatefulWidget {
   const KidsPage({super.key});
@@ -44,7 +43,7 @@ class _KidsPageState extends State<KidsPage> {
 
   Future<void> loadKidsIds() async {
     try {
-      final List<dynamic> fetchedKidsIds = await getkidsByParentId(parentId!);
+      final List<dynamic> fetchedKidsIds = await ParentController().getkidsByParentId(parentId!);
       setState(() {
         kidsIds = fetchedKidsIds;
         isLoading = false;
@@ -63,7 +62,7 @@ class _KidsPageState extends State<KidsPage> {
     phone = prefs.getString('phone');
 
     if (token == null) {
-      Navigator.pushReplacementNamed(context, '/parent/auth');
+      Navigator.pushReplacementNamed(context, '/parent/login');
     } else {
       parentId = prefs.getString('id');
     }
@@ -190,7 +189,7 @@ class _KidsPageState extends State<KidsPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('token');
     prefs.remove('id');
-    Navigator.pushReplacementNamed(context, '/parent/auth');
+    Navigator.pushReplacementNamed(context, '/parent/login');
   }
 
   Future<void> _showMyDialog(BuildContext context) async {
